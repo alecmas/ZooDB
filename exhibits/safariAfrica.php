@@ -1,42 +1,51 @@
 <html>
 
 	<head>
-		<title>POST Test | ZooDB</title>
+		<title>Safari Africa | ZooDB</title>
 	</head>
 
 
 	<body>
 
 		<h1 align="center">Zoo DB</h1>
-		<h3 align="center">POST Test</h3>
+		<h3 align="center">Safari Africa</h3>
 
 		<table align="center" cellspacing="5" cellpadding="8">
 			<tr>
-				<td align="center"><a href="index.html">Home</a></td>
-				<td align="center"><a href="animals.php">Animals</a></td>
-				<td align="center"><a href="exhibits.html">Exhibits</a></td>
-				<td align="center"><a href="food.php">Food</a></td>
-				<td align="center"><a href="zookeepers.php">Zookeepers</a></td>
-				<td align="center"><a href="postTest.php">POST Test</a></td>
+				<td align="center"><a href="/index.html">Home</a></td>
+				<td align="center"><a href="/animals.php">Animals</a></td>
+				<td align="center"><a href="/exhibits.php">Exhibits</a></td>
+				<td align="center"><a href="/food.php">Food</a></td>
+				<td align="center"><a href="/zookeepers.php">Zookeepers</a></td>
+				<td align="center"><a href="/postTest.php">POST Test</a></td>
 			</tr>
 		</table>
 
-		<h3>POST Request Example</h3>
+		<h3>Add an animal</h3>
 
 		<form method="post">
 			Food Type: <input type="text" name="foodType"><br>
-			Name: <input type="text" name="name"><br>
-			Exhibit ID: <input type="text" name="exhibitId"><br>
+			Name: <input type="text" name="name"><br><br>
+			<input type="submit">
+		</form>
+
+		<h3>Delete an animal</h3>
+
+		<form method="post">
+			Animal ID: <input type="text" name="animalId"><br>
 			<input type="submit">
 		</form>
 
 		<?php
 
+			// get url to send JSON requests to
+			//include_once('config.inc.php');
+
 			/**  EXAMPLE OF JSON GET REQUEST **/
 			ini_set("allow_url_fopen", 1);
 
 			//API Url
-			$url = 'https://qzmjmrgdnq.localtunnel.me/animals';
+			$url = 'https://lqqmggiado.localtunnel.me/animals';
 			 
 			//Initiate cURL.
 			$ch = curl_init($url);
@@ -44,9 +53,10 @@
 			// get variables from input fields
 			$foodType = $_POST["foodType"];
 			$name = $_POST["name"];
-			$exhibitId = $_POST["exhibitId"];
 
-			 
+			// exhibit's id
+			$exhibitId = 1;
+		 
 			//The JSON data.
 			$jsonData = array(
 			    'foodType' => $foodType,
@@ -68,6 +78,25 @@
 			 
 			//Execute the request
 			$result = curl_exec($ch);
+
+
+
+
+			// DELETING ANIMALS
+			$ch2 = curl_init($url);
+
+			$animalId = $_POST["animalId"];
+
+			$jsonData2 = array (
+
+				'animalId' => $animalId
+			);
+
+			$jsonDataEncoded2 = json_encode($jsonData2);
+
+			curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "DELETE");
+
+			$result2 = curl_exec($ch2);
 
 		?>
 

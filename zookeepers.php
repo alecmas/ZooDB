@@ -1,14 +1,14 @@
 <html>
 
 	<head>
-		<title>Animals | ZooDB</title>
+		<title>Zookeepers | ZooDB</title>
 	</head>
 
 
 	<body>
 
 		<h1 align="center">Zoo DB</h1>
-		<h3 align="center">Animals</h3>
+		<h3 align="center">Zookeepers</h3>
 
 		<table align="center" cellspacing="5" cellpadding="8">
 			<tr>
@@ -23,16 +23,17 @@
 
 		<?php
 
-			// get url to send JSON requests to
-			include_once('config.inc.php');
-
 			/**  EXAMPLE OF JSON GET REQUEST **/
 			ini_set("allow_url_fopen", 1);
 
 			//$url = 'http://ec2-52-39-104-102.us-west-2.compute.amazonaws.com/search/country?country=China&startDate=2017-04-01&endDate=2017-04-04';
-			//$url = 'https://zkmgxprumq.localtunnel.me/animals';
-			$obj = json_decode(file_get_contents($animalUrl), true);
+			$url = 'https://qzmjmrgdnq.localtunnel.me/zookeepers';
+			$obj = json_decode(file_get_contents($url), true);
 			//echo $obj['results'];
+
+			$foodTypeArray = array();
+			$nameArray = array();
+
 
 			echo '<table align="left" cellspacing="5" cellpadding="8">';
 			echo '<tr>';
@@ -40,6 +41,9 @@
 			echo '</tr>';
 
 			foreach($obj as $result) {
+
+				array_push($foodTypeArray, $result['foodType']);
+				array_push($nameArray, $result['name']);
 
 				echo '<tr>';
 				echo '<td>' . $result['name'] . '</td>';
