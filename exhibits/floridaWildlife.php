@@ -2,23 +2,26 @@
 
 	<head>
 		<title>Florida Wildlife | ZooDB</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	</head>
 
 
 	<body>
 
-		<h1 align="center">Zoo DB</h1>
-		<h3 align="center">Florida Wildlife</h3>
-
-		<table align="center" cellspacing="5" cellpadding="8">
-			<tr>
-				<td align="center"><a href="/index.html">Home</a></td>
-				<td align="center"><a href="/animals.php">Animals</a></td>
-				<td align="center"><a href="/exhibits.html">Exhibits</a></td>
-				<td align="center"><a href="/food.php">Food</a></td>
-				<td align="center"><a href="/zookeepers.php">Zookeepers</a></td>
-			</tr>
-		</table>
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="index.html">ZooDB</a>
+		    </div>
+		    <ul class="nav navbar-nav">
+		      <li><a href="/index.html">Home</a></li>
+		      <li ><a href="/animals.php">Animals</a></li>
+		      <li class="active"><a href="/exhibits.html">Exhibits</a></li>
+		      <li><a href="/food.php">Food</a></li>
+		      <li><a href="/zookeepers.php">Zookeepers</a></li>
+		    </ul>
+		  </div>
+		</nav>
 
 		<h3>Add an animal</h3>
 
@@ -42,13 +45,13 @@
 			//API Url
 			//$url = 'https://lqqmggiado.localtunnel.me/animals';
 			$ini_array = parse_ini_file("config.ini");
-			$url = $ini_array['animals'];
+			$url = $ini_array['root'] . '/animals';
 
 			// GET ANIMALS
 			$obj = json_decode(file_get_contents($url), true);
 			//echo $obj['results'];
 
-			echo '<table align="left" cellspacing="5" cellpadding="8">';
+			echo '<table class="table" align="left" cellspacing="5" cellpadding="8">';
 			echo '<tr>';
 			echo '<td><b>Name</b></td><td><b>Food Type</b></td>';
 			echo '</tr>';

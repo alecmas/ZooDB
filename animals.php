@@ -2,77 +2,91 @@
 
 	<head>
 		<title>Animals | ZooDB</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	</head>
 
 
 	<body>
 
-		<h1 align="center">Zoo DB</h1>
-		<h3 align="center">Animals</h3>
-
-		<table align="center" cellspacing="5" cellpadding="8">
-			<tr>
-				<td align="center"><a href="index.html">Home</a></td>
-				<td align="center"><a href="animals.php">Animals</a></td>
-				<td align="center"><a href="exhibits.html">Exhibits</a></td>
-				<td align="center"><a href="food.php">Food</a></td>
-				<td align="center"><a href="zookeepers.php">Zookeepers</a></td>
-			</tr>
-		</table>
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="index.html">ZooDB</a>
+		    </div>
+		    <ul class="nav navbar-nav">
+		      <li><a href="index.html">Home</a></li>
+		      <li class="active"><a href="animals.php">Animals</a></li>
+		      <li><a href="exhibits.html">Exhibits</a></li>
+		      <li><a href="food.php">Food</a></li>
+		      <li><a href="zookeepers.php">Zookeepers</a></li>
+		    </ul>
+		  </div>
+		</nav>
 
 		<h3>Search an animal</h3>
 		<form method="post">
-			Animal Name: <input type="text" name="animalName"><br>
+			Animal Name: <input type="text" name="animalName"><br><br>
 			<input type="submit"> 
 		</form>
 
 		<?php
 
-			$ini_array = parse_ini_file("config.ini");
-			$url = $ini_array['animals'];
-
-			// get url to send JSON requests to
-			//include_once('config.inc.php');
-
-			/**  EXAMPLE OF JSON GET REQUEST **/
+			error_reporting(E_ALL); 
+			ini_set('display_errors', 1);
 			ini_set("allow_url_fopen", 1);
 
-			//$url = 'http://ec2-52-39-104-102.us-west-2.compute.amazonaws.com/search/country?country=China&startDate=2017-04-01&endDate=2017-04-04';
-			//$url = 'https://lqqmggiado.localtunnel.me/animals';
-			$obj = json_decode(file_get_contents($url), true);
-			//echo $obj['results'];
+			$ini_array = parse_ini_file("config.ini");
 
-			echo '<table align="left" cellspacing="5" cellpadding="8">';
+			echo '<table class="table" align="left" cellspacing="5" cellpadding="8">';
 			echo '<tr>';
-			echo '<td><b>Name</b></td><td><b>Food Type</b></td>';
+			echo '<td><b>Name</b></td><td><b>Food Type</b></td><td><b>Exhibit ID</b></td>';
 			echo '</tr>';
 
-			foreach($obj as $result) {
+			// if user has searched, filter results. else, show all
+			if (isset($_POST['animalName'])) {
 
-				echo '<tr>';
-				echo '<td>' . $result['name'] . '</td>';
-				echo '<td>' . $result['foodType'] . '</td>';
-				echo '</tr>';
+				$animalName = $_POST["animalName"];
+				$searchUrl = $ini_array['root'] . '/animals/search/' . $animalName;
+				$searchObj = json_decode(file_get_contents($searchUrl), true);
 
-				/* to see all contents of JSON
-			    echo 'Food Type: ' . $result['foodType'] . '<br />';
-			    echo 'ID: ' . $result['id'] . '<br />';
-			    echo 'Name: ' . $result['name'] . '<br />';
-			    echo 'Population: ' . $result['population'] . '<br />';
-			    echo '<br />';
-			    */
+				foreach($searchObj as $result) {
+
+					echo '<tr>';
+					echo '<td>' . $result['name'] . '</td>';
+					echo '<td>' . $result['foodType'] . '</td>';
+					echo '<td>' . $result['exhibitId'] . '</td>';
+					echo '</tr>';
+
+				}
+
+				if($searchObj == null) {
+					echo '<p>No results</p>';
+				}
+
+
+			} else {
+
+				$url = $ini_array['root'] . '/animals';
+				$obj = json_decode(file_get_contents($url), true);
+
+				foreach($obj as $result) {
+
+					echo '<tr>';
+					echo '<td>' . $result['name'] . '</td>';
+					echo '<td>' . $result['foodType'] . '</td>';
+					echo '<td>' . $result['exhibitId'] . '</td>';
+					echo '</tr>';
+
+				}
+
+				if($obj == null) {
+					echo '<p>No results</p>';
+				}
 
 			}
 
 			echo '</table>';
-
-
-
-			
-
-
-
-
+			echo '<p align="center">Safari Africa: 1 | Primate World: 2 | Florida Wildlife: 3 | Wallaroo Station: 4 | Asian Gardens: 5</p>';
 
 		?>
 

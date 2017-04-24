@@ -2,41 +2,49 @@
 
 	<head>
 		<title>Exhibits | ZooDB</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	</head>
 
 
 	<body>
 
-		<h1 align="center">Zoo DB</h1>
-		<h3 align="center">Exhibits</h3>
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="index.html">ZooDB</a>
+		    </div>
+		    <ul class="nav navbar-nav">
+		      <li><a href="index.html">Home</a></li>
+		      <li ><a href="animals.php">Animals</a></li>
+		      <li class="active"><a href="exhibits.html">Exhibits</a></li>
+		      <li><a href="food.php">Food</a></li>
+		      <li><a href="zookeepers.php">Zookeepers</a></li>
+		    </ul>
+		  </div>
+		</nav>
 
-		<table align="center" cellspacing="5" cellpadding="8">
-			<tr>
-				<td align="center"><a href="index.html">Home</a></td>
-				<td align="center"><a href="animals.php">Animals</a></td>
-				<td align="center"><a href="exhibits.php">Exhibits</a></td>
-				<td align="center"><a href="food.php">Food</a></td>
-				<td align="center"><a href="zookeepers.php">Zookeepers</a></td>
+		<!-- Exhibits Table -->
+		<table class="table" align ="center">
+			<tr align ="center">
+				<td><img src="/images/safariAfrica.jpg" class="img-rounded" alt="Safari Africa" width="304" height="236"></td>
+				<td><img src="/images/primateWorld.jpg" class="img-rounded" alt="Primate World" width="304" height="236"></td>
+				<td><img src="/images/floridaWildlife.jpg" class="img-rounded" alt="Florida Wildlife" width="304" height="236"></td>
 			</tr>
-		</table>
-
-		<table align ="left" cellspacing="5" cellpadding="8">
-			<tr>
+			<tr align ="center">
 				<td><a href="exhibits\safariAfrica.php">Safari Africa</a></td>
-			</tr>
-			<tr>
 				<td><a href="exhibits\primateWorld.php">Primate World</a></td>
-			</tr>
-			<tr>
 				<td><a href="exhibits\floridaWildlife.php">Florida Wildlife</a></td>
 			</tr>
-			<tr>
-				<td><a href="exhibits\wallarooStation.php">Wallaroo Station</a></td>
+		</table>
+		<table class="table" align ="center">
+			<tr align="center">
+				<td><img src="/images/wallarooStation.jpg" class="img-rounded" alt="Wallaroo Station" width="304" height="236"></td>
+				<td><img src="/images/asianGardens.jpg" class="img-rounded" alt="Asian Gardens" width="304" height="236"></td>
 			</tr>
-			<tr>
+			<tr align="center">
+				<td><a href="exhibits\wallarooStation.php">Wallaroo Station</a></td>
 				<td><a href="exhibits\asianGardens.php">Asian Gardens</a></td>
 			</tr>
-
 		</table>
 
 	</body>
