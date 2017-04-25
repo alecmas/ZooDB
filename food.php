@@ -35,13 +35,17 @@
 		<!-- Table and PHP -->
 		<div class="container">
 			<?php
-
+				// uncomment these to display errors
 				//error_reporting(E_ALL); 
 				//ini_set('display_errors', 1);
+
+				// open connection
 				ini_set("allow_url_fopen", 1);
 
+				// get url variable from config file
 				$ini_array = parse_ini_file("config.ini");
 
+				// table
 				echo '<table class="table" align="left" cellspacing="5" cellpadding="8">';
 				echo '<tr>';
 				echo '<td><b>Name</b></td><td><b>Food Type</b></td><td><b>Cost</b></td>';
@@ -59,7 +63,7 @@
 						echo '<tr><td>No results</td><td></td><td></td></tr>';
 
 					} else {
-
+						// create totalCost variable
 						$totalCost = 0;
 
 						foreach($searchObj as $result) {
@@ -70,10 +74,12 @@
 							echo '<td>' . $result['cost'] . '</td>';
 							echo '</tr>';
 
+							// add cost to totalCost
 							$totalCost = $totalCost + $result['cost'];
 
 						}
 
+						// print totalCost
 						echo '<tr><td></td><td></td><td>Total: $' . $totalCost . '</td></tr>';
 
 					}
@@ -110,46 +116,54 @@
 
 				echo '</table>';
 
-				// ADDING ANIMAL 
-				if (isset($_POST['foodType']) && isset($_POST['foodName']) && isset($_POST['cost'])) {
+				// ADDING FOOD 
+				// if user has typed
+				if (isset($_POST['foodType']) && isset($_POST['foodName']) && isset($_POST['cost'])
+					&& $_POST['foodType'] != '' && $_POST['foodName'] != '' && $_POST['cost'] != '') {
 					// get variables from input fields
 					$foodType = $_POST["foodType"];
 					$foodName = $_POST["foodName"];
 					$cost = $_POST["cost"];
 
-					//Initiate cURL.
+					// initiate cURL
 					$ch = curl_init($url);
 				 
-					//The JSON data.
+					// store data in array for JSON
+					// assign variables to corresponding table columns (foodType, foodName, cost)
 					$jsonData = array(
 					    'foodType' => $foodType,
 					    'foodName' => $foodName,
 					    'cost' => $cost
 					);
 					 
-					//Encode the array into JSON.
+					// encode the array into JSON
 					$jsonDataEncoded = json_encode($jsonData);
 					 
-					//Tell cURL that we want to send a POST request.
+					// tell cURL that we want to send a POST request
 					curl_setopt($ch, CURLOPT_POST, 1);
 					 
-					//Attach our encoded JSON string to the POST fields.
+					// attach our encoded JSON string to the POST fields
 					curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
 					 
-					//Set the content type to application/json
+					// set the content type to application/json
 					curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
+
+					// prevent cURL from printing result code on page
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 					 
-					//Execute the request
+					// execute the request
 					$result = curl_exec($ch);
 					$result = json_decode($result);
 					curl_close($ch);
 
+					// refresh page to update table
 					echo "<meta http-equiv='refresh' content='0'>";
 				}
 
 			?>
 		</div>
 
+		<!-- Add food section -->
 		<div class="container">
 			<h3>Add food</h3>
 

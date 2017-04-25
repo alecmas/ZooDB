@@ -34,30 +34,39 @@
 		<!-- Table and PHP -->
 		<div class="container">
 			<?php
-
+				// uncomment these to display errors
 				//error_reporting(E_ALL); 
 				//ini_set('display_errors', 1);
+
+				// allow url connections
 				ini_set("allow_url_fopen", 1);
 
+				// read server url from config file
 				$ini_array = parse_ini_file("config.ini");
 
+				// build table
 				echo '<table class="table" align="left" cellspacing="5" cellpadding="8">';
 				echo '<tr>';
 				echo '<td><b>Name</b></td><td><b>Food Type</b></td><td><b>Exhibit ID</b></td>';
 				echo '</tr>';
 
-				// if user has searched, filter results. else, show all
+				// if user has searched, filter results. else, show all animals
 				if (isset($_POST['animalName']) && $_POST['animalName'] != '') {
 
+					// reads user input into animalName variable
 					$animalName = $_POST["animalName"];
+					// append appropriate url path
 					$searchUrl = $ini_array['root'] . '/animals/search/' . $animalName;
+					// read JSON object from server (GET request) into searchOb variable
 					$searchObj = json_decode(file_get_contents($searchUrl), true);
 
+					// if no response, print No results
 					if($searchObj == null) {
 
 						echo '<tr><td>No results</td><td></td><td></td></tr>';
 
 					} else {
+						// iterate through results and print each animal
 						foreach($searchObj as $result) {
 
 							echo '<tr>';
@@ -71,15 +80,18 @@
 
 				} else {
 
+					// url is less specifc; getting all animals
 					$url = $ini_array['root'] . '/animals';
+					// read JSON object from server
 					$obj = json_decode(file_get_contents($url), true);
 
+					// if no response, print No results
 					if($obj == null) {
 						
 						echo '<tr><td>No results</td><td></td><td></td></tr>';
 
 					} else {
-
+						// iterate through results and print each animal
 						foreach($obj as $result) {
 
 							echo '<tr>';

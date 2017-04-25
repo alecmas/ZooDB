@@ -104,6 +104,9 @@
 					//Set the content type to application/json
 					curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
 					 
+					// prevent cURL from printing result code on page
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+					
 					//Execute the request
 					$result = curl_exec($ch);
 					$result = json_decode($result);

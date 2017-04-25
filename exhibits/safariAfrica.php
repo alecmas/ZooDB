@@ -56,16 +56,19 @@
 
 				foreach($obj as $result) {
 
+					// Safari Africa's id is 1, so only display animals with exhibitId = 1
 					if($result['exhibitId'] == 1) {
 						echo '<tr>';
 						echo '<td>' . $result['name'] . '</td>';
 						echo '<td>' . $result['foodType'] . '</td>';
 						echo '</tr>';
+						// increment counter
 						$counter = $counter + 1;
 					}
 
 				}
 
+				// if we got 0 results, print No results
 				if($counter == 0) {
 					echo '<tr><td>No results</td><td></td><td></td></tr>';
 				}
@@ -102,6 +105,9 @@
 					 
 					//Set the content type to application/json
 					curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
+					
+					// prevent cURL from printing result code on page
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 					 
 					//Execute the request
 					$result = curl_exec($ch);
@@ -114,6 +120,7 @@
 			?>
 		</div>
 
+		<!-- Add animal section -->
 		<div class="container">
 			<h3>Add animal</h3>
 

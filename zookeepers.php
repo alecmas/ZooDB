@@ -33,7 +33,7 @@
 
 		<div class="container">
 			<?php
-
+				// uncomment these to display errors
 				//error_reporting(E_ALL); 
 				//ini_set('display_errors', 1);
 				ini_set("allow_url_fopen", 1);
@@ -97,7 +97,7 @@
 
 
 
-				// ADDING ZOOKEEPER
+				// ADD ZOOKEEPER
 				if (isset($_POST['firstName']) && isset($_POST['lastName']) && isset($_POST['exhibitId'])) {
 					
 					$url = $ini_array['root'] . '/zookeepers';
@@ -107,29 +107,32 @@
 					$lastName = $_POST["lastName"];
 					$exhibitId = $_POST["exhibitId"];
 
-					//Initiate cURL.
+					// initiate cURL.
 					$ch = curl_init($url);
 				 
-					//The JSON data.
+					// JSON data.
 					$jsonData = array(
 					    'firstName' => $firstName,
 					    'lastName' => $lastName,
 					    'exhibitId' => $exhibitId
 					);
 					 
-					//Encode the array into JSON.
+					// encode the array into JSON.
 					$jsonDataEncoded = json_encode($jsonData);
 					 
-					//Tell cURL that we want to send a POST request.
+					// tell cURL that we want to send a POST request.
 					curl_setopt($ch, CURLOPT_POST, 1);
 					 
-					//Attach our encoded JSON string to the POST fields.
+					// attach our encoded JSON string to the POST fields.
 					curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
 					 
-					//Set the content type to application/json
+					// set the content type to application/json
 					curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
 					 
-					//Execute the request
+					// prevent cURL from printing result code on page
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+					// execute the request
 					$result = curl_exec($ch);
 					$result = json_decode($result);
 					curl_close($ch);
