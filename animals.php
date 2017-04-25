@@ -5,9 +5,9 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	</head>
 
-
 	<body>
 
+		<!--Nav Bar-->
 		<nav class="navbar navbar-default">
 		  <div class="container-fluid">
 		    <div class="navbar-header">
@@ -23,72 +23,82 @@
 		  </div>
 		</nav>
 
-		<h3>Search an animal</h3>
-		<form method="post">
-			Animal Name: <input type="text" name="animalName"><br><br>
-			<input type="submit"> 
-		</form>
+		<!-- Search -->
+		<div class="container">
+			<form method="post">
+				Search by Animal Name: <input type="text" name="animalName">
+				<input type="submit" value="Search"> 
+			</form>
+		</div>
 
-		<?php
+		<!-- Table and PHP -->
+		<div class="container">
+			<?php
 
-			error_reporting(E_ALL); 
-			ini_set('display_errors', 1);
-			ini_set("allow_url_fopen", 1);
+				//error_reporting(E_ALL); 
+				//ini_set('display_errors', 1);
+				ini_set("allow_url_fopen", 1);
 
-			$ini_array = parse_ini_file("config.ini");
+				$ini_array = parse_ini_file("config.ini");
 
-			echo '<table class="table" align="left" cellspacing="5" cellpadding="8">';
-			echo '<tr>';
-			echo '<td><b>Name</b></td><td><b>Food Type</b></td><td><b>Exhibit ID</b></td>';
-			echo '</tr>';
+				echo '<table class="table" align="left" cellspacing="5" cellpadding="8">';
+				echo '<tr>';
+				echo '<td><b>Name</b></td><td><b>Food Type</b></td><td><b>Exhibit ID</b></td>';
+				echo '</tr>';
 
-			// if user has searched, filter results. else, show all
-			if (isset($_POST['animalName'])) {
+				// if user has searched, filter results. else, show all
+				if (isset($_POST['animalName']) && $_POST['animalName'] != '') {
 
-				$animalName = $_POST["animalName"];
-				$searchUrl = $ini_array['root'] . '/animals/search/' . $animalName;
-				$searchObj = json_decode(file_get_contents($searchUrl), true);
+					$animalName = $_POST["animalName"];
+					$searchUrl = $ini_array['root'] . '/animals/search/' . $animalName;
+					$searchObj = json_decode(file_get_contents($searchUrl), true);
 
-				foreach($searchObj as $result) {
+					if($searchObj == null) {
 
-					echo '<tr>';
-					echo '<td>' . $result['name'] . '</td>';
-					echo '<td>' . $result['foodType'] . '</td>';
-					echo '<td>' . $result['exhibitId'] . '</td>';
-					echo '</tr>';
+						echo '<tr><td>No results</td><td></td><td></td></tr>';
 
+					} else {
+						foreach($searchObj as $result) {
+
+							echo '<tr>';
+							echo '<td>' . $result['name'] . '</td>';
+							echo '<td>' . $result['foodType'] . '</td>';
+							echo '<td>' . $result['exhibitId'] . '</td>';
+							echo '</tr>';
+
+						}
+					}
+
+				} else {
+
+					$url = $ini_array['root'] . '/animals';
+					$obj = json_decode(file_get_contents($url), true);
+
+					if($obj == null) {
+						
+						echo '<tr><td>No results</td><td></td><td></td></tr>';
+
+					} else {
+
+						foreach($obj as $result) {
+
+							echo '<tr>';
+							echo '<td>' . $result['name'] . '</td>';
+							echo '<td>' . $result['foodType'] . '</td>';
+							echo '<td>' . $result['exhibitId'] . '</td>';
+							echo '</tr>';
+
+						}
+					}
 				}
 
-				if($searchObj == null) {
-					echo '<p>No results</p>';
-				}
+				echo '</table>';
 
-
-			} else {
-
-				$url = $ini_array['root'] . '/animals';
-				$obj = json_decode(file_get_contents($url), true);
-
-				foreach($obj as $result) {
-
-					echo '<tr>';
-					echo '<td>' . $result['name'] . '</td>';
-					echo '<td>' . $result['foodType'] . '</td>';
-					echo '<td>' . $result['exhibitId'] . '</td>';
-					echo '</tr>';
-
-				}
-
-				if($obj == null) {
-					echo '<p>No results</p>';
-				}
-
-			}
-
-			echo '</table>';
-			echo '<p align="center">Safari Africa: 1 | Primate World: 2 | Florida Wildlife: 3 | Wallaroo Station: 4 | Asian Gardens: 5</p>';
-
-		?>
+			?>
+			
+			<br><br><br><br>
+			<p align="center">Safari Africa: 1 | Primate World: 2 | Florida Wildlife: 3 | Wallaroo Station: 4 | Asian Gardens: 5</p>
+		</div>
 
 	</body>
 

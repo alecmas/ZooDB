@@ -23,131 +23,136 @@
 		  </div>
 		</nav>
 
-		<h3>Add zookeeper</h3>
+		<!-- Search -->
+		<div class="container">
+			<form method="post">
+				Search by Last Name: <input type="text" name="lastName">
+				<input type="submit" value="Search"> 
+			</form>
+		</div>
 
-		<form method="post">
-			First Name: <input type="text" name="firstName"><br>
-			Last Name: <input type="text" name="lastName"><br>
-			Exhibit ID (1-5): <input type="text" name="exhibitId"><br>
-			
-		
-		<p>Safari Africa: 1 | Primate World: 2 | Florida Wildlife: 3 | Wallaroo Station: 4 | Asian Gardens: 5</p>
+		<div class="container">
+			<?php
 
-		<input type="submit"> 
+				//error_reporting(E_ALL); 
+				//ini_set('display_errors', 1);
+				ini_set("allow_url_fopen", 1);
 
-		</form>
+				$ini_array = parse_ini_file("config.ini");
 
-		<h3>Search by Last Name</h3>
-		<form method="post">
-			Last Name: <input type="text" name="lastName"><br><br>
-			<input type="submit"> 
-		</form>
+				echo '<table class="table" align="left" cellspacing="5" cellpadding="8">';
+				echo '<tr>';
+				echo '<td><b>First Name</b></td><td><b>Last Name</b></td><td><b>Exhibit ID</b></td>';
+				echo '</tr>';
 
-		<?php
+				// SEARCHING ZOOKEEPERS BY LAST NAME
+				if (isset($_POST['lastName']) && $_POST['lastName'] != '') {
 
-			error_reporting(E_ALL); 
-			ini_set('display_errors', 1);
-			ini_set("allow_url_fopen", 1);
+					$lastName = $_POST["lastName"];
+					$searchUrl = $ini_array['root'] . '/zookeepers/search/' . $lastName;
+					$searchObj = json_decode(file_get_contents($searchUrl), true);
 
-			$ini_array = parse_ini_file("config.ini");
 
-			echo '<table class="table" align="left" cellspacing="5" cellpadding="8">';
-			echo '<tr>';
-			echo '<td><b>First Name</b></td><td><b>Last Name</b></td><td><b>Exhibit ID</b></td>';
-			echo '</tr>';
+					if($searchObj == null) {
 
-			// SEARCHING ZOOKEEPERS BY LAST NAME
-			if (isset($_POST['lastName'])) {
+						echo '<tr><td>No results</td><td></td><td></td></tr>';
 
-				$lastName = $_POST["lastName"];
-				$searchUrl = $ini_array['root'] . '/zookeepers/search/' . $lastName;
-				$searchObj = json_decode(file_get_contents($searchUrl), true);
+					} else {
 
-				foreach($searchObj as $result) {
+						foreach($searchObj as $result) {
 
-					echo '<tr>';
-					echo '<td>' . $result['firstName'] . '</td>';
-					echo '<td>' . $result['lastName'] . '</td>';
-					echo '<td>' . $result['exhibitId'] . '</td>';
-					echo '</tr>';
+							echo '<tr>';
+							echo '<td>' . $result['firstName'] . '</td>';
+							echo '<td>' . $result['lastName'] . '</td>';
+							echo '<td>' . $result['exhibitId'] . '</td>';
+							echo '</tr>';
 
+						}
+					}
+
+				} else {
+
+					$url = $ini_array['root'] . '/zookeepers';
+					$obj = json_decode(file_get_contents($url), true);
+
+					if($obj == null) {
+
+						echo '<tr><td>No results</td><td></td><td></td></tr>';
+
+					} else {
+
+						foreach($obj as $result) {
+					
+							echo '<tr>';
+							echo '<td>' . $result['firstName'] . '</td>';
+							echo '<td>' . $result['lastName'] . '</td>';
+							echo '<td>' . $result['exhibitId'] . '</td>';
+							echo '</tr>';
+
+						}
+					}
 				}
 
-				if($searchObj == null) {
-					echo '<p>No results</p>';
+				echo '</table>';
+
+
+
+				// ADDING ZOOKEEPER
+				if (isset($_POST['firstName']) && isset($_POST['lastName']) && isset($_POST['exhibitId'])) {
+					
+					$url = $ini_array['root'] . '/zookeepers';
+
+					// get variables from input fields
+					$firstName = $_POST["firstName"];
+					$lastName = $_POST["lastName"];
+					$exhibitId = $_POST["exhibitId"];
+
+					//Initiate cURL.
+					$ch = curl_init($url);
+				 
+					//The JSON data.
+					$jsonData = array(
+					    'firstName' => $firstName,
+					    'lastName' => $lastName,
+					    'exhibitId' => $exhibitId
+					);
+					 
+					//Encode the array into JSON.
+					$jsonDataEncoded = json_encode($jsonData);
+					 
+					//Tell cURL that we want to send a POST request.
+					curl_setopt($ch, CURLOPT_POST, 1);
+					 
+					//Attach our encoded JSON string to the POST fields.
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
+					 
+					//Set the content type to application/json
+					curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
+					 
+					//Execute the request
+					$result = curl_exec($ch);
+					$result = json_decode($result);
+					curl_close($ch);
+
+					echo "<meta http-equiv='refresh' content='0'>";
 				}
 
+			?>
 
-			} else {
+			<br><br><br><br>
+			<p align="center">Safari Africa: 1 | Primate World: 2 | Florida Wildlife: 3 | Wallaroo Station: 4 | Asian Gardens: 5</p>
+		</div>
 
-				$url = $ini_array['root'] . '/zookeepers';
-				$obj = json_decode(file_get_contents($url), true);
+		<div class="container">
+			<h3>Add zookeeper</h3>
 
-				foreach($obj as $result) {
-				
-					echo '<tr>';
-					echo '<td>' . $result['firstName'] . '</td>';
-					echo '<td>' . $result['lastName'] . '</td>';
-					echo '<td>' . $result['exhibitId'] . '</td>';
-					echo '</tr>';
-
-				}
-
-				if($obj == null) {
-					echo '<p>No results</p>';
-				}
-
-			}
-
-			echo '</table>';
-
-
-
-			// ADDING ANIMAL 
-			if (isset($_POST['firstName']) && isset($_POST['lastName']) && isset($_POST['exhibitId'])) {
-				// get variables from input fields
-				$firstName = $_POST["firstName"];
-				$lastName = $_POST["lastName"];
-				$exhibitId = $_POST["exhibitId"];
-
-				//Initiate cURL.
-				$ch = curl_init($url);
-			 
-				//The JSON data.
-				$jsonData = array(
-				    'firstName' => $firstName,
-				    'lastName' => $lastName,
-				    'exhibitId' => $exhibitId
-				);
-				 
-				//Encode the array into JSON.
-				$jsonDataEncoded = json_encode($jsonData);
-				 
-				//Tell cURL that we want to send a POST request.
-				curl_setopt($ch, CURLOPT_POST, 1);
-				 
-				//Attach our encoded JSON string to the POST fields.
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
-				 
-				//Set the content type to application/json
-				curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
-				 
-				//Execute the request
-				$result = curl_exec($ch);
-				$result = json_decode($result);
-				curl_close($ch);
-
-				echo "<meta http-equiv='refresh' content='0'>";
-			}
-
-			
-			
-
-
-
-
-
-		?>
+			<form method="post">
+				First Name: <input type="text" name="firstName"><br>
+				Last Name: <input type="text" name="lastName"><br>
+				Exhibit ID (1-5): <input type="text" name="exhibitId"><br><br>
+				<input type="submit" value="Add"> 
+			</form>
+		</div>
 
 	</body>
 
